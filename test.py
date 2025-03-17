@@ -1,6 +1,4 @@
 import random
-#Randomly chooses rock, paper, or scissors for the computer to play against the user
-#Returns the computer's choice as a string
 def computer_choice() -> str:
     choice = random.randint(1,3)
     if choice == 1:
@@ -9,63 +7,70 @@ def computer_choice() -> str:
         return "paper"
     elif choice == 3:
         return "scissors"
-#Prompts the user to choose rock, paper, or scissors
-#Returns the user's choice as a string
+
 def user_choice() -> str: 
-      return input("Rock, Paper, or Scissors? ").lower()
-#Plays a game of rock, paper, scissors
-#Prints the result of the game
-#Returns a tuple containing the number of wins, losses, and ties for the user
+    return input("Choose rock, paper, or scissors: ").lower()
+def multiplayer_choice() -> str:
+    return input("Player 2 choose rock, paper, or scissors: ").lower()
+def mode_choice() -> str:
+    return input("Select game mode: Computer, Multiplayer, Stats, or Exit: ").lower()
+
+
 def running_game() -> tuple:
-    #Initializes the number of wins, losses, ties, and rounds to 0
-    wins: int = 0
-    losses: int = 0
-    ties: int = 0
-    round: int = 0
-    #Initializes the variables that determine the result of the game to None
-    win: bool = None
-    lose: bool = None
-    tie: bool = None
-    #While loop that continues to play the game until the user types "exit"
+    wins, losses, ties = 0, 0, 0
+    win, lose, tie = False, False, False
+    round = 0
+    choice, user = None, None
+    win, lose, tie = None, None, None 
+    mode = mode_choice()
     while True:
-        user: str = user_choice()
-        computer: str = computer_choice()
-        win, lose, tie = None, None, None 
-        #If statements that determine the result of the game
-        if user == "stats":
+        if user == "stats" or mode == "stats":
             print(f"Wins: {wins} Losses: {losses} Ties: {ties}")
             continue
-        if user == "exit":
-            return (wins, losses, ties)
-        if user == "rock" and computer == "scissors":
+        elif mode == "exit" or user == "exit":
+            return (wins, losses, ties, round)
+        elif mode == "multiplayer":
+            user = user_choice()
+            if user == "exit":
+                return (wins, losses, ties, round)
+            choice = multiplayer_choice()
+            if choice == "exit":
+                return (wins, losses, ties, round)
+        elif mode == "computer":
+            user = user_choice() 
+            if user == "exit":
+                return (wins, losses, ties, round)
+            choice = computer_choice()
+            if choice == "exit":
+                return (wins, losses, ties, round)
+        if user == "rock" and choice == "scissors":
             win = True
             wins += 1
-        elif user == "paper" and computer == "rock":
+        elif user == "paper" and choice == "rock":
                 win = True
                 wins += 1
-        elif user == "scissors" and computer == "paper":
+        elif user == "scissors" and choice == "paper":
                 win = True
                 wins += 1
-        elif user == computer:
+        elif user == choice:
             ties += 1
-        elif user not in ["rock", "paper","scissors"]:
+        elif user not in ["rock", "paper","scissors"] or choice not in ["rock", "paper", "scissors"]:
             print("Choose a valid option")
-            continue
         else:
             lose = True
             losses += 1
         round += 1
-        print(f"You chose {user} and the computer chose {computer} and you {'won' if win else 'lost' if lose else 'tied'}!")
+        if mode == "multiplayer":
+            print(f"Player 1 chose {user} and Player 2 chose {choice} and {"player 1" if win else "player 2" if lose else None} {'won' if win else 'lost' if lose else 'tied'}!")
+        else:
+            print(f"You chose {user} and the computer chose {choice} and you {'won' if win else None}!")
         print(f"Round: {round}")
-        #Prints the result of the game
-#Main function that runs the game
-#Prompts the user to start the game or exit
 def main():
     while True:
         user: str = input("Menu Options: Start Game? (y/n) or Exit? ").lower()
         if user == "yes" or user == "y":
             game = running_game()
-            wins, losses, ties = game
+            wins, losses, ties = game[0], game[1], game[2]
             print(f'Wins: {wins} Losses: {losses} Ties: {ties}')
             break
         elif user == "exit":
