@@ -1,4 +1,7 @@
 import random
+import os
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else "clear")
 def computer_choice(diff,user) -> str:
     if diff == "easy":
         if user == "rock":
@@ -19,71 +22,62 @@ def computer_choice(diff,user) -> str:
         
 def user_choice() -> str: 
     return input("Choose rock, paper, or scissors: ").lower()
+
 def multiplayer_choice() -> str:
     return input("Player 2 choose rock, paper, or scissors: ").lower()
+
 def mode_choice() -> str:
-    return input("Select game mode: Computer, Multiplayer or Exit: ").lower()
+    while True:
+        mode: str = input("Select game mode: Computer, Multiplayer or Exit: ").lower()
+        if mode in ["computer","multiplayer","exit"]:
+            return mode
+        print("Please choose a valid mode.")
 def difficulty() -> str:
-     return input("Select Difficulty: Easy, Medium, Hard ")
+     while True:
+        diff: str = input("Select Difficulty: Easy, Medium, Hard ").lower()
+        if diff in ["easy","medium","hard"]:
+            return diff
+        print("Invalid difficulty")
 
 def running_game() -> tuple:
     wins, losses, ties, rounds = 0, 0, 0, 0
-    choice, user, diff = None, None, None
-    win, lose, tie = None, None, None 
+    mode = mode_choice()
+    if mode == "computer":
+        diff = difficulty()
+
     while True:
-        mode: str = mode_choice()
-        if mode == "computer":
-            diff: str = difficulty()
-            if diff not in ["easy","medium","hard"]:
-                print("Invalid Choice")
-                continue
+        win,lose,tie = False,False,False
         if mode == "exit":
-            return wins, losses, ties, rounds
-        elif mode not in ["computer","multiplayer","exit"]:
-            print("Invalid Option")
-            continue
-        break
-    while True:
-        win, lose, tie = False, False, False
+            return wins,losses,ties,rounds
+        
+        user = user_choice()
+        if user == "stats":
+            print(f"wins: {wins}, Ties: {ties}, Losses: {losses} rounds: {rounds}")
+            continue 
+        if user == "exit":
+            return wins,losses,ties,rounds
+        
         if mode == "computer":
-            user: str = user_choice()
-            if user == "exit":
-                return wins,losses,ties,rounds
             choice: str = computer_choice(diff,user)
         elif mode == "multiplayer":
-            user: str = user_choice()
-            if user == "exit":
-                return wins,losses,ties,rounds
-            choice: str = multiplayer_choice()
-            if choice == "exit":
-                return wins,losses,ties,rounds
-        if user == "stats" or choice == "stats":
-             print(f"wins: {wins}, Ties: {ties}, Losses: {losses} rounds: {rounds}")
-             continue
-        if user == "rock" and choice == "scissors":
-            win: bool = True
-            wins += 1
-        elif user == "paper" and choice == "rock":
-                win: bool = True
-                wins += 1
-        elif user == "scissors" and choice == "paper":
-                win: bool = True
-                wins += 1
-        elif user not in ["rock", "paper","scissors"] or choice not in ["rock", "paper", "scissors"]:
+            clear_screen()
+            choice = multiplayer_choice()
+        if choice == "stats":
+            print(f"wins: {wins}, Ties: {ties}, Losses: {losses} rounds: {rounds}")
+            continue
+        if user not in ["rock", "paper","scissors"] or choice not in ["rock", "paper", "scissors"]:
             print("Choose a valid option")
             continue
+
+        if user == "rock" and choice == "scissors" or user == "paper" and choice == "rock" or user == "scissors" and choice == "paper":
+            wins += 1
+            print(f" You chose {user} and player 2 chose {choice} and won!")
         elif user == choice:
-            tie: bool = True
             ties += 1
+            print(f"You both chose {user} and Tied!")
         else:
-            lose: bool = True
             losses += 1
-        if win:
-            print("You won")
-        elif lose:
-            print("You lost")
-        elif tie:
-            print("Its a tie")
+            print(f"You chose {user} and lost! your opponent chose {choice}")
         rounds += 1
         print(f"Round: {rounds}")
 def main():
