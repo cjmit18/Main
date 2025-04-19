@@ -1,5 +1,6 @@
 import random
-import Player_settings
+import Player_Settings
+import Game_outputs
 import os
 def clear_screen():
     os.system('cls' if os.name == 'nt' else "clear")
@@ -136,26 +137,31 @@ def running_game() -> tuple:
             elif state[2]:
                 ties += 1
             rounds += 1
+        if rounds == 3:
+          #Here
+          set_actions = Game_outputs.Output().set_actions(actions)
 def main():
     while True:
         user: str = input("Menu Options: Start Game? (y/n) or Exit? ").lower()
         if user == "yes" or user == "y":
-            game_state = Player_settings.game_state()
+            game_state = Player_Settings.game_state()
+            output = Game_outputs.Output()
             game: tuple = running_game()
-            print(game)
             game_state.set_scores(game[0],game[1],game[2],game[3])
+            output.set_actions(game[8])
+            print(f"Game Actions: {output.get_actions()}")
             if game[5] == "computer":
                 game_state.set_mode(game[5])
                 game_state.set_diff(game[4])
-                game_state.set_actions(game[6:])
-                print(f"Game Mode: {game_state.get_mode()}")
-                print(f"Game Difficulty: {game_state.get_diff()}")
+                print(f"Game Mode: {game_state.get_mode().capitalize()}")
+                print(f"Game Difficulty: {game_state.get_diff().capitalize()}")
             elif game[5] == "multiplayer":
                 game_state.set_mode(game[5])
                 game_state.set_diff("None")
                 game_state.set_player_two_scores(game[6],game[7])
-                print(f"Game Mode: {game_state.get_mode()}")
-            print(f"wins: {game_state.wins}, Ties: {game_state.ties}, Losses: {game_state.losses} rounds: {game_state.rounds}")
+                print(f"Game Mode: {game_state.get_mode().capitalize()}")
+            print(f"Player 1 Stats: Wins: {game_state.wins}, Ties: {game_state.ties}, Losses: {game_state.losses} rounds: {game_state.rounds}")
+            print(f"Player 2 Wins: {game_state.player_two_wins}, Player 2 Losses: {game_state.player_two_losses} rounds: {game_state.rounds}")
             break
         elif user == "exit":
             print("Exiting Game")
