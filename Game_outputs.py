@@ -10,9 +10,9 @@ class Output:
         self.setup_actions = setup_actions
         self.game_actions = game_actions
     def set_rounds(self, game_actions) -> int:
-        self.round_1 = self.game_actions[0:3]
-        self.round_2 = self.game_actions[3:6]
-        self.round_3 = self.game_actions[6:9]
+        self.round_1 = game_actions[0:3]
+        self.round_2 = game_actions[3:6]
+        self.round_3 = game_actions[6:9]
         return self.round_1, self.round_2, self.round_3
     def get_rounds(self) -> tuple:
         return self.round_1, self.round_2, self.round_3
