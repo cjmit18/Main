@@ -4,7 +4,7 @@ import Game_outputs
 import os
 def clear_screen():
     os.system('cls' if os.name == 'nt' else "clear")
-def computer_choice(diff,user,) -> str:
+def computer_choice(diff,user) -> str:
     if diff == "easy":
         if user == "rock":
             return random.choice(["scissors","rock"])
@@ -24,22 +24,22 @@ def computer_choice(diff,user,) -> str:
         
 def user_choice() -> str: 
     user = input("Choose rock, paper, or scissors: ").lower()
-    if user not in ["rock", "paper", "scissors","stats","exit"]:
+    if user not in ["rock", "paper", "scissors","stats","back"]:
         print("Invalid Option")
         return user_choice()
     return user
 
 def multiplayer_choice() -> str:
     user = input("Player 2 Choose rock, paper, or scissors: ").lower()
-    if user not in ["rock", "paper", "scissors","stats","exit"]:
+    if user not in ["rock", "paper", "scissors","stats","back"]:
         print("Invalid Option")
         return multiplayer_choice()
     return user
 
 def mode_choice() -> str:
     while True:
-        mode: str = input("Select game mode: Computer, Multiplayer or Exit: ").lower()
-        if mode in ["computer","multiplayer","exit"]:
+        mode: str = input("Select game mode: Computer, Multiplayer or Back: ").lower()
+        if mode in ["computer","multiplayer","back"]:
             return mode
         print("Please choose a valid mode.")
 
@@ -89,6 +89,7 @@ def sets(setup_actions,game_actions) -> str:
             return action_output
 
 def running_game() -> tuple:
+    print("Welcome to Rock, Paper, Scissors")
     wins, losses, ties, rounds = 0, 0, 0, 0
     mode, diff = None, None
     player_two_wins, player_two_losses = 0, 0
@@ -97,7 +98,7 @@ def running_game() -> tuple:
     export_list: list = [wins,losses,ties,rounds,diff,mode,player_two_wins,player_two_losses,action_export]
     mode = mode_choice()
     actions.append(mode)
-    if mode == "exit":
+    if mode == "back":
         export_list[0],export_list[1],export_list[2],export_list[3] = wins,losses,ties,rounds
         export_list[4],export_list[5] = "None","None"
         export_list[6],export_list[7] = player_two_wins,player_two_losses
@@ -114,7 +115,7 @@ def running_game() -> tuple:
         if user == "stats":
             print(f"wins: {wins}, Ties: {ties}, Losses: {losses} rounds: {rounds}")
             continue 
-        elif user == "exit":
+        elif user == "back":
             export_list[0],export_list[1],export_list[2],export_list[3] = wins,losses,ties,rounds
             export_list[4],export_list[5] = diff,mode
             export_list[6],export_list[7] = player_two_wins,player_two_losses
@@ -142,7 +143,7 @@ def running_game() -> tuple:
             if choice == "stats":
                 print(f"wins: {player_two_wins}, Ties: {ties}, Losses: {player_two_losses} rounds: {rounds}")
                 continue
-            elif choice == "exit":
+            elif choice == "back":
                 export_list[0],export_list[1],export_list[2],export_list[3] = wins,losses,ties,rounds
                 export_list[4],export_list[5] = diff,mode
                 export_list[6],export_list[7] = player_two_wins,player_two_losses
@@ -150,6 +151,10 @@ def running_game() -> tuple:
                 print("Exiting Game")
                 return export_list
             state: str = conditions(user,choice)
+            w,l,t = state
+            actions.append(w)
+            actions.append(l)
+            actions.append(t)
             actions.append(state)
             if state[0]:
                 wins += 1
@@ -167,12 +172,12 @@ def running_game() -> tuple:
             action_export.append(new_round)
 
 def main():
-    while True:
-        user: str = input("Menu Options: Start Game? (y/n) or Exit? ").lower()
-        if user == "yes" or user == "y":
+    first = True
+    user = input("Do you want to play rock, paper, scissors? (yes/no), Results, Help ").lower()
+    if user == "yes" or user == "y" or user == "start":
+        while True:
             game_state = Player_Settings.game_state()
             game: tuple = running_game()
-            clear_screen()
             game_state.set_scores(game[0],game[1],game[2],game[3])
             game_state.set_player_two_scores(game[6],game[7])
             game_info: list = game[8]
@@ -189,12 +194,43 @@ def main():
             print(f"Player 1 Stats: Wins: {game_state.wins}, Ties: {game_state.ties}, Losses: {game_state.losses}")
             print(f"Player 2 Stats: Wins: {game_state.player_two_wins}, Losses: {game_state.player_two_losses}")
             print("-"*50)
-            main()      
-        elif user == "no" or user == "n" or user == "exit":
-            print("Exiting Game")
-            break
-        else:
-            print("Invalid Option")
-            continue
+            first = False 
+            if first == False:
+                user = input("Do you want to play again? or view results?: ").lower()
+                if user == "yes" or user == "y" or user == "start":
+                    continue
+                elif user == "no" or user == "n" or user == "exit":
+                    print("Exiting Game")
+                    break
+                elif user == "help":
+                    print("Help: Type 'yes' or 'y' to start the game, 'no' or 'n' to exit, 'results' to view results.")
+                    main()
+                elif user == "results":
+                    count = 1
+                    clear_screen()
+                    print(f"Games Played: {int(game_state.rounds/3)}")
+                    print("-"*50)
+                    for i in game_info:
+                        print(f"Game {count}:")
+                        print(f"Round 1: {i.round_1[:2]} {"win" if i.round_1[2][0] else "lose" if i.round_1[2][1] else "tie"}")
+                        print(f"Round 2: {i.round_2[:2]} {"win" if i.round_2[2][0] else "lose" if i.round_2[2][1] else "tie"}")
+                        print(f"Round 3: {i.round_3[:2]} {"win" if i.round_3[2][0] else "lose" if i.round_3[2][1] else "tie"}")
+                        print("-"*50)
+                        count += 1
+                    main()
+    elif user == "no" or user == "n" or user == "exit":
+        print("Exiting Game")
+    elif user == "results":
+        clear_screen()
+        print("No games played yet.")
+        main()
+    elif user == "help":
+        clear_screen()
+        print("Help: Type 'yes' or 'y' to start the game, 'no' or 'n' to exit, 'results' to view results.")
+        main()
+    else:
+        clear_screen()
+        print("Invalid input. Please type 'yes' or 'y' to start the game, 'no' or 'n' to exit, or 'results' to view results.")
+        main()
 if __name__ == '__main__':
     main()
