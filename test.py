@@ -20,8 +20,7 @@ def computer_choice(diff,user,) -> str:
         elif user == "paper":
             return random.choice(["paper","scissors"])
         else:
-            return random.choice(["scissors", "rock"])
-           
+            return random.choice(["scissors", "rock"])  
         
 def user_choice() -> str: 
     user = input("Choose rock, paper, or scissors: ").lower()
@@ -66,19 +65,43 @@ def conditions(user,choice) -> tuple:
             print(f"You chose {user} and lost! your opponent chose {choice}")
         return win,lose,tie
     
+def split_list(actions: list, mode: str, rounds: int) -> tuple:
+    if mode == "computer":
+        if rounds == 3:
+            setup_actions = actions[0:2]
+            game_actions = actions[2:]
+        elif rounds > 3:
+            setup_actions = None
+            game_actions = actions[0:]
+    elif mode == "multiplayer":
+        if rounds == 3:
+            setup_actions = actions[0:1]
+            game_actions = actions[1:]
+        elif rounds > 3:
+            setup_actions = None
+            game_actions = actions[0:]
+    return setup_actions, game_actions
+
+def sets(setup_actions,game_actions) -> str:
+            action_output = Game_outputs.Output(setup_actions,game_actions)
+            action_output.set_actions(setup_actions,game_actions)
+            action_output.set_rounds(game_actions)
+            return action_output
+
 def running_game() -> tuple:
     wins, losses, ties, rounds = 0, 0, 0, 0
     mode, diff = None, None
     player_two_wins, player_two_losses = 0, 0
+    action_export: list = []
     actions: list = []
-    export_list: list = [wins,losses,ties,rounds,diff,mode,player_two_wins,player_two_losses,actions]
+    export_list: list = [wins,losses,ties,rounds,diff,mode,player_two_wins,player_two_losses,action_export]
     mode = mode_choice()
     actions.append(mode)
     if mode == "exit":
         export_list[0],export_list[1],export_list[2],export_list[3] = wins,losses,ties,rounds
         export_list[4],export_list[5] = "None","None"
         export_list[6],export_list[7] = player_two_wins,player_two_losses
-        export_list[8] = actions
+        export_list[8] = action_export
         print("Exiting Game")
         return export_list
     elif mode == "computer":
@@ -95,7 +118,7 @@ def running_game() -> tuple:
             export_list[0],export_list[1],export_list[2],export_list[3] = wins,losses,ties,rounds
             export_list[4],export_list[5] = diff,mode
             export_list[6],export_list[7] = player_two_wins,player_two_losses
-            export_list[8] = actions
+            export_list[8] = action_export
             print("Exiting Game")
             return export_list
         if mode == "computer":
@@ -123,7 +146,7 @@ def running_game() -> tuple:
                 export_list[0],export_list[1],export_list[2],export_list[3] = wins,losses,ties,rounds
                 export_list[4],export_list[5] = diff,mode
                 export_list[6],export_list[7] = player_two_wins,player_two_losses
-                export_list [8] = actions
+                export_list [8] = action_export
                 print("Exiting Game")
                 return export_list
             state: str = conditions(user,choice)
@@ -137,33 +160,37 @@ def running_game() -> tuple:
             elif state[2]:
                 ties += 1
             rounds += 1
-        if rounds == 3:
-          #Here
-          set_actions = Game_outputs.Output().set_actions(actions)
+        if rounds % 3 == 0:
+            setup_actions, game_actions = split_list(actions,mode,rounds)
+            actions: list = []
+            new_round = sets(setup_actions,game_actions)
+            action_export.append(new_round)
+
 def main():
     while True:
         user: str = input("Menu Options: Start Game? (y/n) or Exit? ").lower()
         if user == "yes" or user == "y":
             game_state = Player_Settings.game_state()
-            output = Game_outputs.Output()
             game: tuple = running_game()
+            clear_screen()
             game_state.set_scores(game[0],game[1],game[2],game[3])
-            output.set_actions(game[8])
-            print(f"Game Actions: {output.get_actions()}")
+            game_state.set_player_two_scores(game[6],game[7])
+            game_info: list = game[8]
             if game[5] == "computer":
                 game_state.set_mode(game[5])
                 game_state.set_diff(game[4])
                 print(f"Game Mode: {game_state.get_mode().capitalize()}")
                 print(f"Game Difficulty: {game_state.get_diff().capitalize()}")
             elif game[5] == "multiplayer":
-                game_state.set_mode(game[5])
+                game_state.set_mode(game[5]) 
                 game_state.set_diff("None")
-                game_state.set_player_two_scores(game[6],game[7])
                 print(f"Game Mode: {game_state.get_mode().capitalize()}")
-            print(f"Player 1 Stats: Wins: {game_state.wins}, Ties: {game_state.ties}, Losses: {game_state.losses} rounds: {game_state.rounds}")
-            print(f"Player 2 Wins: {game_state.player_two_wins}, Player 2 Losses: {game_state.player_two_losses} rounds: {game_state.rounds}")
-            break
-        elif user == "exit":
+            print(f"Rounds: {game_state.rounds}, Games Played: {int(game_state.rounds/3)}")
+            print(f"Player 1 Stats: Wins: {game_state.wins}, Ties: {game_state.ties}, Losses: {game_state.losses}")
+            print(f"Player 2 Stats: Wins: {game_state.player_two_wins}, Losses: {game_state.player_two_losses}")
+            print("-"*50)
+            main()      
+        elif user == "no" or user == "n" or user == "exit":
             print("Exiting Game")
             break
         else:

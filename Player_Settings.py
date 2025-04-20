@@ -27,5 +27,10 @@ class game_state:
         return self.mode
     def get_diff(self) -> str:
         return self.diff
+    def get_player_two_wins(self) -> int:
+        return self.player_two_wins
+    def get_player_two_losses(self) -> int:
+        return self.player_two_losses
     def get_player_two_scores(self) -> tuple:
         return self.player_two_wins, self.player_two_losses
+    
