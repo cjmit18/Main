@@ -9,7 +9,7 @@ class game_state:
         self.diff = diff
         self.player_two_wins = player_two_wins
         self.player_two_losses = player_two_losses
-    def set_scores(self, wins: int, losses: int, ties: int, rounds: int) -> None:
+    def set_scores(self, wins: int, ties: int, losses: int, rounds: int) -> None:
         self.wins = wins
         self.losses = losses
         self.ties = ties
@@ -33,4 +33,4 @@ class game_state:
         return self.player_two_losses
     def get_player_two_scores(self) -> tuple:
         return self.player_two_wins, self.player_two_losses
-    
+   

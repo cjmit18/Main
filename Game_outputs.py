@@ -3,9 +3,6 @@ class Output:
     def __init__(self, setup_actions: list, game_actions: list) -> None:
         self.setup_actions = setup_actions
         self.game_actions = game_actions
-        self.round_1 = []
-        self.round_2 = []
-        self.round_3 = []
     def set_actions(self, setup_actions: list, game_actions: list) -> None:
         self.setup_actions = setup_actions
         self.game_actions = game_actions
