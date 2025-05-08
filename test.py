@@ -5,7 +5,6 @@ import os
 def clear_screen() -> None:
     os.system('cls' if os.name == 'nt' else "clear")
 
-
 def computer_choice(diff,user) -> str:
     if diff == "easy":
         if user == "rock":
@@ -27,8 +26,8 @@ def computer_choice(diff,user) -> str:
 def user_choice() -> str:
     centered_game = "{0:^100}\n{1:^100s}"
     centered_options = "{0:^100s}\n{1:^100s}\n{2:^100s}" 
-    print(centered_game.format(f"{'-'*10} Player 1 Choices: {"-"*10}","-- Rock -- Paper -- Scissors"))
-    print(centered_options.format(f"{'-'*10} Menu Options {"-"*10}","-- Stats -- Back -- Help",f"{'-'*30}"))
+    print(centered_game.format(f"{'-'*10} Player 1 Choices: {'-'*10}",'-- Rock -- Paper -- Scissors'))
+    print(centered_options.format(f"{'-'*10} Menu Options {'-'*10}",'-- Stats -- Back -- Help',f"{'-'*30}"))
     user = input().lower()
     if user not in ["rock", "paper", "scissors","stats","back","help"]:
         print("Invalid Option")
@@ -38,8 +37,8 @@ def user_choice() -> str:
 def multiplayer_choice() -> str:
     centered_game = "{0:^100}\n{1:^100s}"
     centered_options = "{0:^100s}\n{1:^100s}\n{2:^100s}" 
-    print(centered_game.format(f"{'-'*10} Player 2 Choices: {"-"*10}","-- Rock -- Paper -- Scissors"))
-    print(centered_options.format(f"{'-'*10} Menu Options {"-"*10}","-- Stats -- Back -- Help",f"{'-'*30}"))
+    print(centered_game.format(f"{'-'*10} Player 2 Choices: {'-'*10}","-- Rock -- Paper -- Scissors"))
+    print(centered_options.format(f"{'-'*10} Menu Options {'-'*10}","-- Stats -- Back -- Help",f"{'-'*30}"))
     user = input().lower()
     if user not in ["rock", "paper", "scissors","stats","back","help"]:
         print("Invalid Option")
@@ -206,6 +205,7 @@ def running_game() -> tuple:
             action_export.append(new_round)
             actions: list = []
             wins,losses,ties = 0,0,0
+
 def start_game() -> tuple:
     game_state = Player_Settings.game_state()
     game: tuple = running_game()
@@ -244,9 +244,9 @@ def commands(game_info, game_state) -> None:
                 print("-"*50)
                 for i in game_info:
                     print(f"Game {count}:")
-                    print(f"Round 1: {i.round_1[:2]} {"win" if i.round_1[2][0] else "lose" if i.round_1[2][1] else "tie"}")
-                    print(f"Round 2: {i.round_2[:2]} {"win" if i.round_2[2][0] else "lose" if i.round_2[2][1] else "tie"}")
-                    print(f"Round 3: {i.round_3[:2]} {"win" if i.round_3[2][0] else "lose" if i.round_3[2][1] else "tie"}")
+                    print(f"Round 1: {i.round_1[:2]} {'win' if i.round_1[2][0] else 'lose' if i.round_1[2][1] else 'tie'}")
+                    print(f"Round 2: {i.round_2[:2]} {'win' if i.round_2[2][0] else 'lose' if i.round_2[2][1] else 'tie'}")
+                    print(f"Round 3: {i.round_3[:2]} {'win'if i.round_3[2][0] else 'lose' if i.round_3[2][1] else 'tie'}")
                     print("-"*50)
                     count += 1
             except IndexError:

@@ -33,4 +33,3 @@ class game_state:
         return self.player_two_losses
     def get_player_two_scores(self) -> tuple:
         return self.player_two_wins, self.player_two_losses
-   
